@@ -1,0 +1,471 @@
+{
+  "_meta": "EXPANDED enterprise history for NexusGuard multi-tenant demo. Fully satisfies Track 01 (Agents on Connected Data), Track 02 (Agent Memory & Coordination), and Track 03 (Company Brain).",
+  "tenants": ["acme_checkout", "acme_auth", "acme_data"],
+
+  "teams": [
+    {"id": "team-a", "name": "Team-A (Checkout & Core)", "lead": "asha", "repo": "acme_checkout"},
+    {"id": "team-b", "name": "Team-B (Payments & Billing)", "lead": "nina", "repo": "acme_checkout"},
+    {"id": "team-sec", "name": "Security & Identity Platform", "lead": "alice", "repo": "acme_auth"},
+    {"id": "team-data", "name": "Data Governance & Compliance", "lead": "marcus", "repo": "acme_data"},
+    {"id": "team-infra", "name": "Core Infrastructure & Reliability", "lead": "elena", "repo": "acme_checkout"}
+  ],
+
+  "people": [
+    {"id": "asha",    "name": "Asha",    "active": true,  "team": "team-a"},
+    {"id": "bob",     "name": "Bob",     "active": false, "team": "team-a", "left_on": "2025-06-30"},
+    {"id": "dev",     "name": "Dev",     "active": true,  "team": "team-a"},
+    {"id": "priya",   "name": "Priya",   "active": true,  "team": "team-b"},
+    {"id": "nina",    "name": "Nina",    "active": true,  "team": "team-b"},
+    {"id": "sam",     "name": "Sam",     "active": true,  "team": "team-a"},
+    {"id": "ceo",     "name": "Sarah (CEO)", "active": true, "team": null},
+    {"id": "alice",   "name": "Alice",   "active": true,  "team": "team-sec"},
+    {"id": "charlie", "name": "Charlie", "active": true,  "team": "team-sec"},
+    {"id": "marcus",  "name": "Marcus",  "active": true,  "team": "team-data"},
+    {"id": "leila",   "name": "Leila",   "active": true,  "team": "team-data"},
+    {"id": "elena",   "name": "Elena",   "active": true,  "team": "team-infra"},
+    {"id": "victor",  "name": "Victor",  "active": false, "team": "team-infra", "left_on": "2025-11-15"}
+  ],
+
+  "functions": [
+    {"name": "applyDiscount",       "file": "checkout/discounts.py", "owner_team": "team-a",    "calls": [], "repo": "acme_checkout"},
+    {"name": "applyCoupon",         "file": "checkout/pricing.py",   "owner_team": "team-a",    "calls": [], "repo": "acme_checkout"},
+    {"name": "calculateTotal",      "file": "checkout/pricing.py",   "owner_team": "team-a",    "calls": ["applyDiscount", "applyCoupon"], "repo": "acme_checkout"},
+    {"name": "checkout",            "file": "checkout/flow.py",      "owner_team": "team-a",    "calls": ["calculateTotal"], "repo": "acme_checkout"},
+    {"name": "renderCart",          "file": "ui/cart.py",            "owner_team": "team-a",    "calls": [], "repo": "acme_checkout"},
+    {"name": "sendReceipt",         "file": "notify/receipt.py",     "owner_team": "team-b",    "calls": ["calculateTotal"], "repo": "acme_checkout"},
+    {"name": "refundOrder",         "file": "payments/refunds.py",   "owner_team": "team-b",    "calls": ["applyDiscount"], "repo": "acme_checkout"},
+    {"name": "loyaltyPoints",       "file": "loyalty/points.py",     "owner_team": "team-b",    "calls": ["applyDiscount"], "repo": "acme_checkout"},
+    {"name": "chargeStripeInvoice", "file": "billing/stripe.py",     "owner_team": "team-b",    "calls": ["calculateTotal"], "repo": "acme_checkout"},
+    {"name": "currencyConversion",   "file": "billing/forex.py",      "owner_team": "team-b",    "calls": [], "repo": "acme_checkout"},
+    {"name": "rateLimitRedisBucket", "file": "infra/ratelimit.py",    "owner_team": "team-infra", "calls": [], "repo": "acme_checkout"},
+    {"name": "circuitBreaker",       "file": "infra/resilience.py",   "owner_team": "team-infra", "calls": ["chargeStripeInvoice"], "repo": "acme_checkout"},
+    
+    {"name": "verifyJwtToken",      "file": "auth/jwt.py",           "owner_team": "team-sec",  "calls": [], "repo": "acme_auth"},
+    {"name": "rotateSigningKey",    "file": "auth/keys.py",          "owner_team": "team-sec",  "calls": ["verifyJwtToken"], "repo": "acme_auth"},
+    {"name": "invalidateSessions",  "file": "auth/session.py",       "owner_team": "team-sec",  "calls": ["verifyJwtToken"], "repo": "acme_auth"},
+    {"name": "enforceMfaPolicy",    "file": "auth/mfa.py",           "owner_team": "team-sec",  "calls": ["verifyJwtToken"], "repo": "acme_auth"},
+
+    {"name": "exportUserData",      "file": "privacy/gdpr.py",       "owner_team": "team-data", "calls": ["encryptPiiField"], "repo": "acme_data"},
+    {"name": "hardDeleteAccount",   "file": "privacy/retention.py",  "owner_team": "team-data", "calls": ["auditLogEvent"], "repo": "acme_data"},
+    {"name": "encryptPiiField",     "file": "security/crypto.py",    "owner_team": "team-data", "calls": [], "repo": "acme_data"},
+    {"name": "auditLogEvent",       "file": "compliance/audit.py",   "owner_team": "team-data", "calls": [], "repo": "acme_data"}
+  ],
+
+  "commits": [
+    {"person": "bob",     "function": "applyDiscount",       "count": 22, "last": "2025-04-18"},
+    {"person": "bob",     "function": "calculateTotal",      "count": 7,  "last": "2025-05-02"},
+    {"person": "priya",   "function": "applyDiscount",       "count": 9,  "last": "2026-06-20"},
+    {"person": "priya",   "function": "refundOrder",         "count": 14, "last": "2026-05-11"},
+    {"person": "dev",     "function": "applyDiscount",       "count": 2,  "last": "2026-09-01"},
+    {"person": "dev",     "function": "renderCart",          "count": 9,  "last": "2026-10-01"},
+    {"person": "asha",    "function": "checkout",            "count": 5,  "last": "2025-09-10"},
+    {"person": "sam",     "function": "calculateTotal",      "count": 6,  "last": "2026-02-27"},
+    {"person": "nina",    "function": "chargeStripeInvoice", "count": 18, "last": "2026-08-15"},
+    {"person": "priya",   "function": "chargeStripeInvoice", "count": 8,  "last": "2026-07-20"},
+    {"person": "nina",    "function": "currencyConversion",   "count": 6,  "last": "2026-04-05"},
+    {"person": "victor",  "function": "rateLimitRedisBucket", "count": 25, "last": "2025-10-01"},
+    {"person": "elena",   "function": "rateLimitRedisBucket", "count": 8,  "last": "2026-08-10"},
+    {"person": "elena",   "function": "circuitBreaker",       "count": 12, "last": "2026-09-05"},
+
+    {"person": "alice",   "function": "verifyJwtToken",      "count": 31, "last": "2026-10-05"},
+    {"person": "charlie", "function": "rotateSigningKey",    "count": 11, "last": "2026-09-15"},
+    {"person": "charlie", "function": "verifyJwtToken",      "count": 4,  "last": "2026-09-20"},
+    {"person": "alice",   "function": "invalidateSessions",  "count": 14, "last": "2026-07-12"},
+    {"person": "charlie", "function": "enforceMfaPolicy",    "count": 9,  "last": "2026-08-01"},
+
+    {"person": "marcus",  "function": "exportUserData",      "count": 19, "last": "2026-09-12"},
+    {"person": "marcus",  "function": "hardDeleteAccount",   "count": 15, "last": "2026-08-25"},
+    {"person": "leila",   "function": "encryptPiiField",     "count": 22, "last": "2026-10-02"},
+    {"person": "leila",   "function": "auditLogEvent",       "count": 17, "last": "2026-09-18"},
+    {"person": "marcus",  "function": "encryptPiiField",     "count": 6,  "last": "2026-05-10"}
+  ],
+
+  "pull_requests": [
+    {
+      "id": "PR-904",
+      "title": "Refactor: Clean up legacy if-statement in applyDiscount",
+      "author": "dev",
+      "date": "2026-10-17",
+      "state": "open",
+      "modifies": ["applyDiscount"],
+      "reviewers": [],
+      "repo": "acme_checkout",
+      "description": "Developer proposes deleting what looks like dead legacy if-condition in pricing tiers."
+    },
+    {
+      "id": "PR-512",
+      "title": "Latency optimization: Async webhook retry in chargeStripeInvoice",
+      "author": "dev",
+      "date": "2026-10-16",
+      "state": "open",
+      "modifies": ["chargeStripeInvoice"],
+      "reviewers": [],
+      "repo": "acme_checkout",
+      "description": "Switches synchronous invoice execution to asynchronous queuing with backoff."
+    },
+    {
+      "id": "PR-108",
+      "title": "UI Refresh: Add seasonal banner animation to renderCart",
+      "author": "sam",
+      "date": "2026-10-15",
+      "state": "open",
+      "modifies": ["renderCart"],
+      "reviewers": [],
+      "repo": "acme_checkout",
+      "description": "Adds purely client-side promotional banner without touching business logic."
+    },
+    {
+      "id": "PR-770",
+      "title": "Performance: Batch refund queue processing in refundOrder",
+      "author": "dev",
+      "date": "2026-10-14",
+      "state": "open",
+      "modifies": ["refundOrder"],
+      "reviewers": [],
+      "repo": "acme_checkout",
+      "description": "Groups individual refund calls into bulk SQL transactions."
+    },
+    {
+      "id": "PR-610",
+      "title": "Reliability: Tighten sliding window threshold in rateLimitRedisBucket",
+      "author": "dev",
+      "date": "2026-10-12",
+      "state": "open",
+      "modifies": ["rateLimitRedisBucket"],
+      "reviewers": [],
+      "repo": "acme_checkout",
+      "description": "Reduces Redis sliding window from 60s to 10s without adjusting cluster memory limits."
+    },
+    {
+      "id": "PR-401",
+      "title": "Security: Upgrade to RS256 token verification in verifyJwtToken",
+      "author": "charlie",
+      "date": "2026-10-16",
+      "state": "open",
+      "modifies": ["verifyJwtToken"],
+      "reviewers": [],
+      "repo": "acme_auth",
+      "description": "Alters core authentication gateway key parsing logic across enterprise SSO."
+    },
+    {
+      "id": "PR-420",
+      "title": "Session: Immediate token revocation hook in invalidateSessions",
+      "author": "charlie",
+      "date": "2026-10-11",
+      "state": "open",
+      "modifies": ["invalidateSessions"],
+      "reviewers": [],
+      "repo": "acme_auth",
+      "description": "Flushes global Redis session cache on password reset across all mobile apps."
+    },
+    {
+      "id": "PR-330",
+      "title": "Compliance: Cascade purge customer PII in hardDeleteAccount",
+      "author": "dev",
+      "date": "2026-10-15",
+      "state": "open",
+      "modifies": ["hardDeleteAccount"],
+      "reviewers": [],
+      "repo": "acme_data",
+      "description": "Bypasses cold storage archiving during GDPR purge to speed up processing."
+    },
+    {
+      "id": "PR-350",
+      "title": "Security: Upgrade AES encryption salt derivation in encryptPiiField",
+      "author": "dev",
+      "date": "2026-10-13",
+      "state": "open",
+      "modifies": ["encryptPiiField"],
+      "reviewers": [],
+      "repo": "acme_data",
+      "description": "Changes encryption initialization vector without migrating historical user records."
+    }
+  ],
+
+  "slack": [
+    {
+      "id": "S-001",
+      "channel": "#sales",
+      "date": "2025-03-12",
+      "author": "ceo",
+      "text": "Promised Client X 15% off on all renewals, locked in for 2 years. Bob, make sure checkout honors it.",
+      "mentions": ["bob"],
+      "about": ["applyDiscount"],
+      "led_to_ticket": "T-418"
+    },
+    {
+      "id": "S-002",
+      "channel": "#incidents",
+      "date": "2026-03-02",
+      "author": "nina",
+      "text": "Client X was overbilled after PR-212. Refund queue is growing. Priya is on it.",
+      "mentions": ["priya", "sam"],
+      "about": ["applyDiscount"],
+      "led_to_ticket": "T-502"
+    },
+    {
+      "id": "S-003",
+      "channel": "#eng",
+      "date": "2026-06-18",
+      "author": "priya",
+      "text": "Fixing Client X rounding again. This branch looks like dead code but it is load-bearing, do not remove.",
+      "mentions": ["priya"],
+      "about": ["applyDiscount"],
+      "led_to_ticket": null
+    },
+    {
+      "id": "S-044",
+      "channel": "#payments",
+      "date": "2026-07-10",
+      "author": "nina",
+      "text": "Stripe invoices require strict idempotency tokens on retries. Any change must replay shadow billing.",
+      "mentions": ["priya"],
+      "about": ["chargeStripeInvoice"],
+      "led_to_ticket": "T-309"
+    },
+    {
+      "id": "S-099",
+      "channel": "#security",
+      "date": "2026-09-01",
+      "author": "alice",
+      "text": "All internal services must validate JWT signatures with key rotation tolerance of 5 minutes.",
+      "mentions": ["charlie"],
+      "about": ["verifyJwtToken"],
+      "led_to_ticket": "T-880"
+    },
+    {
+      "id": "S-112",
+      "channel": "#infra-warroom",
+      "date": "2026-04-18",
+      "author": "elena",
+      "text": "Victor originally wrote the Redis token bucket with Lua scripts. Changing window size will evict keys unless maxmemory-policy is set to noeviction.",
+      "mentions": ["victor", "elena"],
+      "about": ["rateLimitRedisBucket"],
+      "led_to_ticket": "T-602"
+    },
+    {
+      "id": "S-205",
+      "channel": "#legal-compliance",
+      "date": "2026-05-15",
+      "author": "marcus",
+      "text": "Article 17 GDPR requires verifiable audit trail before deleting primary tables. Do NOT delete without triggering auditLogEvent.",
+      "mentions": ["marcus", "leila"],
+      "about": ["hardDeleteAccount"],
+      "led_to_ticket": "T-720"
+    },
+    {
+      "id": "S-301",
+      "channel": "#crypto-security",
+      "date": "2026-08-20",
+      "author": "leila",
+      "text": "Rotating the AES-GCM IV in encryptPiiField broke decryption on 4,000 legacy records last quarter. We must dual-read using key-version header.",
+      "mentions": ["leila", "marcus"],
+      "about": ["encryptPiiField"],
+      "led_to_ticket": "T-815"
+    }
+  ],
+
+  "tickets": [
+    {"id": "T-418", "title": "Honor Client X 15% renewal discount", "status": "done", "date": "2025-03-13", "references": ["applyDiscount"]},
+    {"id": "T-502", "title": "Refund Client X overbilling",         "status": "done", "date": "2026-03-02", "references": ["applyDiscount", "refundOrder"]},
+    {"id": "T-309", "title": "Stripe API idempotency guarantee",    "status": "done", "date": "2026-07-12", "references": ["chargeStripeInvoice"]},
+    {"id": "T-880", "title": "Enforce strict RS256 signing check",  "status": "in_progress", "date": "2026-09-02", "references": ["verifyJwtToken"]},
+    {"id": "T-602", "title": "Redis sliding-window memory ceiling", "status": "done", "date": "2026-04-20", "references": ["rateLimitRedisBucket"]},
+    {"id": "T-720", "title": "GDPR Right-to-Erasure compliance audit", "status": "done", "date": "2026-05-18", "references": ["hardDeleteAccount"]},
+    {"id": "T-815", "title": "PII AES dual-version decryption support", "status": "done", "date": "2026-08-22", "references": ["encryptPiiField"]}
+  ],
+
+  "decisions": [
+    {
+      "id": "D-001",
+      "summary": "Keep a client-specific discount branch in applyDiscount: contractual promise to Client X.",
+      "date": "2025-03-12",
+      "justifies": ["applyDiscount"],
+      "decided_in_slack": ["S-001"],
+      "decided_in_ticket": ["T-418"]
+    },
+    {
+      "id": "D-003",
+      "summary": "All Stripe charges must enforce idempotency keys to prevent duplicate debiting on network timeouts.",
+      "date": "2026-07-10",
+      "justifies": ["chargeStripeInvoice"],
+      "decided_in_slack": ["S-044"],
+      "decided_in_ticket": ["T-309"]
+    },
+    {
+      "id": "D-002",
+      "summary": "Rotate public verification certificates every 90 days with dual-key grace window.",
+      "date": "2026-09-01",
+      "justifies": ["verifyJwtToken"],
+      "decided_in_slack": ["S-099"],
+      "decided_in_ticket": ["T-880"]
+    },
+    {
+      "id": "D-004",
+      "summary": "Redis rate limit bucket changes must preserve Lua memory keys and verify Redis cluster headroom.",
+      "date": "2026-04-20",
+      "justifies": ["rateLimitRedisBucket"],
+      "decided_in_slack": ["S-112"],
+      "decided_in_ticket": ["T-602"]
+    },
+    {
+      "id": "D-005",
+      "summary": "Account deletion must write cryptographic audit digest prior to dropping user schema rows.",
+      "date": "2026-05-18",
+      "justifies": ["hardDeleteAccount"],
+      "decided_in_slack": ["S-205"],
+      "decided_in_ticket": ["T-720"]
+    },
+    {
+      "id": "D-006",
+      "summary": "PII cipher modifications require backward-compatible key versioning to prevent silent data corruption.",
+      "date": "2026-08-22",
+      "justifies": ["encryptPiiField"],
+      "decided_in_slack": ["S-301"],
+      "decided_in_ticket": ["T-815"]
+    }
+  ],
+
+  "docs": [
+    {"id": "DOC-1", "title": "Discount Logic & VIP Overrides Runbook", "last_updated": "2024-11-01", "describes": ["applyDiscount"], "repo": "acme_checkout"},
+    {"id": "DOC-3", "title": "Stripe Webhook & Idempotency Runbook",   "last_updated": "2026-07-15", "describes": ["chargeStripeInvoice"], "repo": "acme_checkout"},
+    {"id": "DOC-2", "title": "Authentication Architecture & Key Rotation Playbook", "last_updated": "2026-01-15", "describes": ["verifyJwtToken"], "repo": "acme_auth"},
+    {"id": "DOC-4", "title": "Edge Rate Limiting & Redis Topology Standard", "last_updated": "2025-10-15", "describes": ["rateLimitRedisBucket"], "repo": "acme_checkout"},
+    {"id": "DOC-5", "title": "GDPR Erasure & Audit Trail Specification", "last_updated": "2026-05-20", "describes": ["hardDeleteAccount"], "repo": "acme_data"},
+    {"id": "DOC-6", "title": "At-Rest Field Encryption & Envelope Standards", "last_updated": "2026-08-25", "describes": ["encryptPiiField"], "repo": "acme_data"}
+  ],
+
+  "incidents": [
+    {
+      "id": "I-007",
+      "date": "2026-03-02",
+      "loss_usd": 12000,
+      "summary": "Refactor removed the Client X discount branch; renewals were overbilled and refunded.",
+      "caused_by_pr": "PR-212",
+      "affected": ["applyDiscount", "refundOrder"],
+      "repo": "acme_checkout"
+    },
+    {
+      "id": "I-019",
+      "date": "2026-07-08",
+      "loss_usd": 8500,
+      "summary": "Webhook retry race condition caused duplicate invoice debiting for 14 accounts.",
+      "caused_by_pr": "PR-512",
+      "affected": ["chargeStripeInvoice"],
+      "repo": "acme_checkout"
+    },
+    {
+      "id": "I-010",
+      "date": "2026-04-10",
+      "loss_usd": 5000,
+      "summary": "Prematurely expired public key caused 20-minute authentication outage for enterprise SSO.",
+      "caused_by_pr": "PR-401",
+      "affected": ["verifyJwtToken"],
+      "repo": "acme_auth"
+    },
+    {
+      "id": "I-025",
+      "date": "2026-04-18",
+      "loss_usd": 28000,
+      "summary": "Redis rate limit Lua memory spike evicted checkout session keys during Black Friday warm-up.",
+      "caused_by_pr": "PR-610",
+      "affected": ["rateLimitRedisBucket"],
+      "repo": "acme_checkout"
+    },
+    {
+      "id": "I-033",
+      "date": "2026-05-14",
+      "loss_usd": 45000,
+      "summary": "Direct customer table deletion missed compliance audit log, leading to severe regulatory enquiry.",
+      "caused_by_pr": "PR-330",
+      "affected": ["hardDeleteAccount"],
+      "repo": "acme_data"
+    },
+    {
+      "id": "I-042",
+      "date": "2026-08-19",
+      "loss_usd": 18000,
+      "summary": "Cipher salt IV change caused unhandled decryption crash across 4,200 user profile renders.",
+      "caused_by_pr": "PR-350",
+      "affected": ["encryptPiiField"],
+      "repo": "acme_data"
+    }
+  ],
+
+  "procedures": [
+    {
+      "id": "P-001",
+      "title": "Safe Discount Migration Playbook",
+      "steps": [
+        "Check get_decision_chain for contractual promises before deleting any branch",
+        "Ask the true expert (not only the official owner) to review",
+        "Run the Client X renewal test fixture against shadow invoices",
+        "Deploy behind a feature flag and watch refund volume for 48h"
+      ],
+      "learned_from": "I-007",
+      "applies_to": ["applyDiscount"],
+      "repo": "acme_checkout"
+    },
+    {
+      "id": "P-003",
+      "title": "Stripe Webhook Safe Deployment Playbook",
+      "steps": [
+        "Simulate network timeout with Redis mock idempotency cache",
+        "Verify duplicate webhook payloads return HTTP 200 without double-charge",
+        "Conduct canary deploy across 5% of checkout traffic"
+      ],
+      "learned_from": "I-019",
+      "applies_to": ["chargeStripeInvoice"],
+      "repo": "acme_checkout"
+    },
+    {
+      "id": "P-002",
+      "title": "Zero-Downtime Key Rotation Procedure",
+      "steps": [
+        "Generate dual public/private pairs in HashiCorp Vault",
+        "Publish new public key to auth cache 24h prior to rotation",
+        "Switch token signing to new private key",
+        "Deprecate old public key after grace period expires"
+      ],
+      "learned_from": "I-010",
+      "applies_to": ["verifyJwtToken"],
+      "repo": "acme_auth"
+    },
+    {
+      "id": "P-004",
+      "title": "Redis Rate Limit Modification Playbook",
+      "steps": [
+        "Check cluster memory headroom with INFO memory before window modification",
+        "Verify Lua script memory bounds in staging under 5,000 req/sec benchmark",
+        "Require SRE approval from Elena (or author Victor's documented notes)"
+      ],
+      "learned_from": "I-025",
+      "applies_to": ["rateLimitRedisBucket"],
+      "repo": "acme_checkout"
+    },
+    {
+      "id": "P-005",
+      "title": "GDPR Compliance Purge Execution Playbook",
+      "steps": [
+        "Verify auditLogEvent executes and flushes immutable receipt before DELETE",
+        "Ensure cold storage backups retain encrypted tombstone marker",
+        "Require sign-off from Data Protection Officer (Marcus)"
+      ],
+      "learned_from": "I-033",
+      "applies_to": ["hardDeleteAccount"],
+      "repo": "acme_data"
+    },
+    {
+      "id": "P-006",
+      "title": "PII Encryption Migration Procedure",
+      "steps": [
+        "Support dual-cipher reading with 2-byte version prefix header",
+        "Run offline background migration script to re-encrypt old records",
+        "Verify zero decryption errors on legacy test dataset before swapping write key"
+      ],
+      "learned_from": "I-042",
+      "applies_to": ["encryptPiiField"],
+      "repo": "acme_data"
+    }
+  ]
+}
