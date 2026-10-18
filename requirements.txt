@@ -1,0 +1,12 @@
+falkordb
+python-dotenv
+mcp
+fastmcp
+openai
+anthropic
+fastapi
+uvicorn
+streamlit
+PyGithub
+networkx
+pyvis
